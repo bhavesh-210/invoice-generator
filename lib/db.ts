@@ -9,17 +9,17 @@ const globalWithMongoose = globalThis as typeof globalThis & {
     mongoose?: MongooseCache;
 };
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-    throw new Error('Please define MONGODB_URI in .env.local');
-}
-
 const cached =
     globalWithMongoose.mongoose ??
     (globalWithMongoose.mongoose = { conn: null, promise: null });
 
 async function dbConnect() {
+    const MONGODB_URI = process.env.MONGODB_URI;
+
+    if (!MONGODB_URI) {
+        throw new Error('Please define MONGODB_URI in .env.local');
+    }
+
     if (cached.conn) {
         return cached.conn;
     }
