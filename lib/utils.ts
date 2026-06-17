@@ -37,8 +37,11 @@ export const generateInvoiceNumber = () => {
     return `INV-${timestamp}`;
 };
 
-export const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
+export const formatDate = (date: Date | string | number | null | undefined) => {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return 'N/A';
+    return d.toLocaleDateString('en-IN', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
