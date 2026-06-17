@@ -124,11 +124,13 @@ export default function InvoiceForm() {
                     window.location.href = '/dashboard';
                 }, 1500);
             } else {
-                setMessage('Error saving invoice');
+                const errorData = await response.json().catch(() => ({}));
+                setMessage(errorData.error || 'Error saving invoice');
             }
         } catch (error) {
             console.error('Error saving invoice:', error);
-            setMessage('Error saving invoice');
+            const errMsg = error instanceof Error ? error.message : 'Error saving invoice';
+            setMessage(errMsg);
         } finally {
             setLoading(false);
         }

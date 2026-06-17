@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(invoice, { status: 201 });
     } catch (error: unknown) {
+        console.error('Failed to save invoice:', error);
         const message = error instanceof Error ? error.message : undefined;
         return NextResponse.json(
             { error: message || 'Failed to create invoice' },
