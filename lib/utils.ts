@@ -1,24 +1,53 @@
-// Utility functions
+export const calculateLineTotal = (
+    quantity: number,
+    rate: number,
+    gst: number,
+) => {
+    const subtotal = quantity * rate;
+    const gstAmount = (subtotal * gst) / 100;
+    return subtotal + gstAmount;
+};
 
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount);
+export interface InvoiceItem {
+    quantity: number;
+    rate: number;
+    gst: number;
 }
 
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(date);
-}
+export const calculateInvoiceTotals = (items: InvoiceItem[]) => {
+    let subtotal = 0;
+    let totalGST = 0;
 
-export function generateInvoiceNumber(): string {
-  return `INV-${Date.now()}`;
-}
+    items.forEach((item) => {
+        const lineSubtotal = item.quantity * item.rate;
+        const gstAmount = (lineSubtotal * item.gst) / 100;
+        subtotal += lineSubtotal;
+        totalGST += gstAmount;
+    });
 
-export function calculateTax(amount: number, taxRate: number = 0.1): number {
-  return amount * taxRate;
-}
+    return {
+        subtotal: Math.round(subtotal * 100) / 100,
+        totalGST: Math.round(totalGST * 100) / 100,
+        totalAmount: Math.round((subtotal + totalGST) * 100) / 100,
+    };
+};
+
+export const generateInvoiceNumber = () => {
+    const timestamp = Date.now();
+    return `INV-${timestamp}`;
+};
+
+export const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
+export const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+    }).format(amount);
+};

@@ -1,22 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/db';
+import Invoice from '@/lib/models/Invoice';
 
-// GET - Fetch all invoices
-export async function GET(request: NextRequest) {
-  try {
-    // TODO: Fetch invoices from database
-    return NextResponse.json({ invoices: [] });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch invoices' }, { status: 500 });
-  }
+export async function GET() {
+    try {
+        await dbConnect();
+        const invoices = await Invoice.find({}).sort({ createdAt: -1 });
+        return NextResponse.json(invoices, { status: 200 });
+    } catch (error) {
+        console.error('Failed to fetch invoices:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch invoices' },
+            { status: 500 },
+        );
+    }
 }
 
-// POST - Create a new invoice
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    // TODO: Save invoice to database
-    return NextResponse.json({ invoice: body }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create invoice' }, { status: 500 });
-  }
+    try {
+        await dbConnect();
+        const body = await request.json();
+
+        const invoice = new Invoice(body);
+        await invoice.save();
+
+        return NextResponse.json(invoice, { status: 201 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : undefined;
+        return NextResponse.json(
+            { error: message || 'Failed to create invoice' },
+            { status: 500 },
+        );
+    }
 }

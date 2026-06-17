@@ -1,12 +1,37 @@
-// Database connection and utilities
-// TODO: Configure your database connection here (MongoDB, PostgreSQL, etc.)
+import mongoose from 'mongoose';
 
-export async function connectDB() {
-  // TODO: Implement database connection logic
-  console.log('Connecting to database...');
+type MongooseCache = {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+};
+
+const globalWithMongoose = globalThis as typeof globalThis & {
+    mongoose?: MongooseCache;
+};
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+    throw new Error('Please define MONGODB_URI in .env.local');
 }
 
-export async function disconnectDB() {
-  // TODO: Implement database disconnection logic
-  console.log('Disconnecting from database...');
+const cached =
+    globalWithMongoose.mongoose ??
+    (globalWithMongoose.mongoose = { conn: null, promise: null });
+
+async function dbConnect() {
+    if (cached.conn) {
+        return cached.conn;
+    }
+
+    if (!cached.promise) {
+        cached.promise = mongoose
+            .connect(MONGODB_URI!)
+            .then((mongoose) => mongoose);
+    }
+
+    cached.conn = await cached.promise;
+    return cached.conn;
 }
+
+export default dbConnect;
