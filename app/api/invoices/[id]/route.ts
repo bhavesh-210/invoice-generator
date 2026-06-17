@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Invoice from '@/lib/models/Invoice';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } },
-) {
+type RouteContext = {
+    params: Promise<{ id: string }>;
+};
+
+export async function GET(request: NextRequest, context: RouteContext) {
     try {
         await dbConnect();
-        const invoice = await Invoice.findById(params.id);
+        const { id } = await context.params;
+        const invoice = await Invoice.findById(id);
 
         if (!invoice) {
             return NextResponse.json(
@@ -27,13 +29,11 @@ export async function GET(
     }
 }
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } },
-) {
+export async function DELETE(request: NextRequest, context: RouteContext) {
     try {
         await dbConnect();
-        await Invoice.findByIdAndDelete(params.id);
+        const { id } = await context.params;
+        await Invoice.findByIdAndDelete(id);
 
         return NextResponse.json(
             { message: 'Invoice deleted' },
@@ -48,15 +48,13 @@ export async function DELETE(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } },
-) {
+export async function PUT(request: NextRequest, context: RouteContext) {
     try {
         await dbConnect();
         const body = await request.json();
+        const { id } = await context.params;
 
-        const invoice = await Invoice.findByIdAndUpdate(params.id, body, {
+        const invoice = await Invoice.findByIdAndUpdate(id, body, {
             new: true,
         });
 
