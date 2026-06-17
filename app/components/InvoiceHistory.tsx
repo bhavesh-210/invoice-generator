@@ -3,14 +3,31 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatDate, formatCurrency } from '@/lib/utils';
+import PDFExport from './PDFExport';
+
+interface InvoiceItem {
+    description: string;
+    quantity: number;
+    rate: number;
+    gst: number;
+    total: number;
+}
 
 interface Invoice {
     _id: string;
+    businessName: string;
+    businessEmail: string;
+    businessPhone: string;
     invoiceNumber: string;
-    clientName: string;
-    totalAmount: number;
     invoiceDate: string;
     dueDate: string;
+    clientName: string;
+    clientEmail: string;
+    clientAddress: string;
+    items: InvoiceItem[];
+    subtotal: number;
+    totalGST: number;
+    totalAmount: number;
 }
 
 export default function InvoiceHistory() {
@@ -110,13 +127,24 @@ export default function InvoiceHistory() {
                             <td className="p-4 text-right font-semibold">
                                 {formatCurrency(invoice.totalAmount)}
                             </td>
-                            <td className="p-4 text-center">
-                                <button
-                                    onClick={() => handleDelete(invoice._id)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
-                                    Delete
-                                </button>
-                            </td>
+                             <td className="p-4 text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                    <Link
+                                        href={`/?edit=${invoice._id}`}
+                                        className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 font-semibold transition-colors">
+                                        Edit
+                                    </Link>
+                                    <PDFExport
+                                        invoice={invoice}
+                                        className="bg-emerald-600 text-white px-3 py-1 rounded text-sm hover:bg-emerald-700 font-semibold transition-colors"
+                                    />
+                                    <button
+                                        onClick={() => handleDelete(invoice._id)}
+                                        className="bg-rose-500 text-white px-3 py-1 rounded text-sm hover:bg-rose-600 font-semibold transition-colors">
+                                        Delete
+                                    </button>
+                                </div>
+                             </td>
                         </tr>
                     ))}
                 </tbody>

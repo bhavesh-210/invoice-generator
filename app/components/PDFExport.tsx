@@ -31,9 +31,10 @@ interface Invoice {
 
 interface PDFExportProps {
     invoice: Invoice;
+    className?: string;
 }
 
-export default function PDFExport({ invoice }: PDFExportProps) {
+export default function PDFExport({ invoice, className }: PDFExportProps) {
     const contentRef = useRef<HTMLDivElement>(null);
 
     const handleDownloadPDF = async () => {
@@ -58,7 +59,7 @@ export default function PDFExport({ invoice }: PDFExportProps) {
             </div>
             <button
                 onClick={handleDownloadPDF}
-                className="bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700">
+                className={className || "bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700"}>
                 Download PDF
             </button>
         </>

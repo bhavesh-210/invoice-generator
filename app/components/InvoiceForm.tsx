@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { calculateInvoiceTotals, generateInvoiceNumber } from '@/lib/utils';
 import InvoicePreview from './InvoicePreview';
 import PDFExport from './PDFExport';
@@ -14,6 +15,9 @@ interface Item {
 }
 
 export default function InvoiceForm() {
+    const searchParams = useSearchParams();
+    const editId = searchParams.get('edit');
+
     const [businessName, setBusinessName] = useState('');
     const [businessEmail, setBusinessEmail] = useState('');
     const [businessPhone, setBusinessPhone] = useState('');
@@ -35,6 +39,48 @@ export default function InvoiceForm() {
     const [message, setMessage] = useState('');
 
     const totals = calculateInvoiceTotals(items);
+
+    useEffect(() => {
+        if (editId) {
+            const fetchInvoice = async () => {
+                try {
+                    const response = await fetch(`/api/invoices/${editId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setBusinessName(data.businessName || '');
+                        setBusinessEmail(data.businessEmail || '');
+                        setBusinessPhone(data.businessPhone || '');
+                        setInvoiceNumber(data.invoiceNumber || '');
+                        if (data.invoiceDate) {
+                            setInvoiceDate(
+                                new Date(data.invoiceDate)
+                                    .toISOString()
+                                    .split('T')[0],
+                            );
+                        }
+                        if (data.dueDate) {
+                            setDueDate(
+                                new Date(data.dueDate)
+                                    .toISOString()
+                                    .split('T')[0],
+                            );
+                        }
+                        setClientName(data.clientName || '');
+                        setClientEmail(data.clientEmail || '');
+                        setClientAddress(data.clientAddress || '');
+                        setItems(data.items || []);
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        setMessage(errorData.error || 'Failed to load invoice for editing');
+                    }
+                } catch (error) {
+                    console.error('Failed to load invoice:', error);
+                    setMessage('Failed to load invoice for editing');
+                }
+            };
+            void fetchInvoice();
+        }
+    }, [editId]);
 
     const handleAddItem = () => {
         setItems([
@@ -115,14 +161,21 @@ export default function InvoiceForm() {
                 totalAmount: totals.totalAmount,
             };
 
-            const response = await fetch('/api/invoices', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(invoiceData),
-            });
+            const response = await fetch(
+                editId ? `/api/invoices/${editId}` : '/api/invoices',
+                {
+                    method: editId ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(invoiceData),
+                },
+            );
 
             if (response.ok) {
-                setMessage('✓ Invoice saved successfully!');
+                setMessage(
+                    editId
+                        ? '✓ Invoice updated successfully!'
+                        : '✓ Invoice saved successfully!',
+                );
                 setTimeout(() => {
                     window.location.href = '/dashboard';
                 }, 1500);
@@ -143,7 +196,7 @@ export default function InvoiceForm() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60">
                 <h2 className="mb-6 text-2xl font-bold text-slate-900">
-                    Create Invoice
+                    {editId ? 'Edit Invoice' : 'Create Invoice'}
                 </h2>
 
                 {message && (
@@ -316,7 +369,7 @@ export default function InvoiceForm() {
                         onClick={handleSaveInvoice}
                         disabled={loading}
                         className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-                        {loading ? 'Saving...' : 'Save Invoice'}
+                        {loading ? 'Saving...' : editId ? 'Update Invoice' : 'Save Invoice'}
                     </button>
                     <PDFExport
                         invoice={{
