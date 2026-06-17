@@ -86,7 +86,10 @@ export default function InvoiceForm() {
         if (
             !businessName ||
             !businessEmail ||
+            !businessPhone ||
             !clientName ||
+            !clientEmail ||
+            !clientAddress ||
             !dueDate ||
             items.length === 0
         ) {
@@ -170,7 +173,7 @@ export default function InvoiceForm() {
                     />
                     <input
                         type="tel"
-                        placeholder="Phone"
+                        placeholder="Phone *"
                         value={businessPhone}
                         onChange={(e) => setBusinessPhone(e.target.value)}
                         className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
@@ -224,7 +227,7 @@ export default function InvoiceForm() {
                         className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                     />
                     <textarea
-                        placeholder="Client Address"
+                        placeholder="Client Address *"
                         value={clientAddress}
                         onChange={(e) => setClientAddress(e.target.value)}
                         className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
