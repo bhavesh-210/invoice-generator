@@ -21,9 +21,16 @@ export default function InvoiceHistory() {
         try {
             const response = await fetch('/api/invoices');
             const data = await response.json();
-            setInvoices(data.invoices ?? data);
+            const nextInvoices = Array.isArray(data)
+                ? data
+                : Array.isArray(data?.invoices)
+                  ? data.invoices
+                  : [];
+
+            setInvoices(nextInvoices);
         } catch (error) {
             console.error('Error fetching invoices:', error);
+            setInvoices([]);
         } finally {
             setLoading(false);
         }
