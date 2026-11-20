@@ -23,6 +23,9 @@ export default function InvoiceForm() {
     const [businessPhone, setBusinessPhone] = useState('');
     const [businessAddress, setBusinessAddress] = useState('');
     const [businessGstin, setBusinessGstin] = useState('');
+    const [businessFssai, setBusinessFssai] = useState('');
+    const [placeOfSupply, setPlaceOfSupply] = useState('');
+    const [orderReference, setOrderReference] = useState('');
     const [invoiceNumber, setInvoiceNumber] = useState(generateInvoiceNumber());
     const [invoiceDate, setInvoiceDate] = useState(
         new Date().toISOString().split('T')[0],
@@ -32,6 +35,7 @@ export default function InvoiceForm() {
     const [clientName, setClientName] = useState('');
     const [clientEmail, setClientEmail] = useState('');
     const [clientAddress, setClientAddress] = useState('');
+    const [clientGstin, setClientGstin] = useState('');
 
     const [items, setItems] = useState<Item[]>([
         { description: '', quantity: 1, rate: 0, gst: 18, total: 0 },
@@ -54,6 +58,9 @@ export default function InvoiceForm() {
                         setBusinessPhone(data.businessPhone || '');
                         setBusinessAddress(data.businessAddress || '');
                         setBusinessGstin(data.businessGstin || '');
+                        setBusinessFssai(data.businessFssai || '');
+                        setPlaceOfSupply(data.placeOfSupply || '');
+                        setOrderReference(data.orderReference || '');
                         setInvoiceNumber(data.invoiceNumber || '');
                         if (data.invoiceDate) {
                             setInvoiceDate(
@@ -72,6 +79,7 @@ export default function InvoiceForm() {
                         setClientName(data.clientName || '');
                         setClientEmail(data.clientEmail || '');
                         setClientAddress(data.clientAddress || '');
+                        setClientGstin(data.clientGstin || '');
                         setItems(data.items || []);
                     } else {
                         const errorData = await response.json().catch(() => ({}));
@@ -155,12 +163,16 @@ export default function InvoiceForm() {
                 businessPhone,
                 businessAddress,
                 businessGstin,
+                businessFssai,
+                placeOfSupply,
+                orderReference,
                 invoiceNumber,
                 invoiceDate: new Date(invoiceDate),
                 dueDate: new Date(dueDate),
                 clientName,
                 clientEmail,
                 clientAddress,
+                clientGstin,
                 items,
                 subtotal: totals.subtotal,
                 totalGST: totals.totalGST,
@@ -249,8 +261,14 @@ export default function InvoiceForm() {
                         placeholder="Your business GSTIN (optional)"
                         value={businessGstin}
                         onChange={(e) => setBusinessGstin(e.target.value.toUpperCase())}
-                        className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm"
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm"
                     />
+                    <input type="text" placeholder="FSSAI license number (optional)" value={businessFssai}
+                        onChange={(e) => setBusinessFssai(e.target.value)}
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm" />
+                    <input type="text" placeholder="Place of supply (optional)" value={placeOfSupply}
+                        onChange={(e) => setPlaceOfSupply(e.target.value)}
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm" />
                 </div>
 
                 <div className="mb-6">
@@ -279,6 +297,9 @@ export default function InvoiceForm() {
                             className="rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         />
                     </div>
+                    <input type="text" placeholder="Order reference (optional)" value={orderReference}
+                        onChange={(e) => setOrderReference(e.target.value)}
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm" />
                 </div>
 
                 <div className="mb-6">
@@ -306,6 +327,9 @@ export default function InvoiceForm() {
                         className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         rows={3}
                     />
+                    <input type="text" placeholder="Customer GSTIN (optional)" value={clientGstin}
+                        onChange={(e) => setClientGstin(e.target.value)}
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm" />
                 </div>
 
                 <div className="mb-6">
@@ -398,12 +422,16 @@ export default function InvoiceForm() {
                             businessPhone,
                             businessAddress,
                             businessGstin,
+                businessFssai,
+                placeOfSupply,
+                orderReference,
                             invoiceNumber,
                             invoiceDate,
                             dueDate,
                             clientName,
                             clientEmail,
                             clientAddress,
+                clientGstin,
                             items,
                             ...totals,
                         }}
@@ -422,16 +450,20 @@ export default function InvoiceForm() {
                         phone: businessPhone,
                         address: businessAddress,
                         gstin: businessGstin,
+                        fssai: businessFssai,
+                        placeOfSupply,
                     }}
                     invoice={{
                         number: invoiceNumber,
                         date: invoiceDate,
                         dueDate: dueDate,
+                        orderReference,
                     }}
                     client={{
                         name: clientName,
                         email: clientEmail,
                         address: clientAddress,
+                        gstin: clientGstin,
                     }}
                     items={items}
                     totals={totals}
