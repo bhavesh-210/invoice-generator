@@ -13,6 +13,9 @@ const invoiceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    businessAddress: { type: String, default: '' },
+    businessGstin: { type: String, default: '' },
+
     invoiceNumber: {
         type: String,
         required: true,
