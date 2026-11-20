@@ -20,6 +20,10 @@ interface Invoice {
     businessPhone: string;
     businessAddress?: string;
     businessGstin?: string;
+    businessFssai?: string;
+    placeOfSupply?: string;
+    orderReference?: string;
+    clientGstin?: string;
     invoiceNumber: string;
     invoiceDate: string;
     dueDate: string;
