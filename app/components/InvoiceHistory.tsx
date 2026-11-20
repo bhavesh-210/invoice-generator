@@ -18,6 +18,8 @@ interface Invoice {
     businessName: string;
     businessEmail: string;
     businessPhone: string;
+    businessAddress?: string;
+    businessGstin?: string;
     invoiceNumber: string;
     invoiceDate: string;
     dueDate: string;
