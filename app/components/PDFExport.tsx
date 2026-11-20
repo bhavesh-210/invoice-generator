@@ -2,7 +2,7 @@
 
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import InvoiceDocument, { type InvoiceDocumentData } from './InvoiceDocument';
 
 interface PDFExportProps {
@@ -12,6 +12,7 @@ interface PDFExportProps {
 
 export default function PDFExport({ invoice, className }: PDFExportProps) {
     const contentRef = useRef<HTMLDivElement>(null);
+    const exportId = useId();
     const [busy, setBusy] = useState(false);
 
     const handleDownloadPDF = async () => {
@@ -19,7 +20,18 @@ export default function PDFExport({ invoice, className }: PDFExportProps) {
         setBusy(true);
         try {
             const element = contentRef.current;
-            const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                onclone: (documentClone) => {
+                    const copy = documentClone.getElementById(exportId);
+                    if (copy) {
+                        copy.style.left = '0';
+                        copy.style.top = '0';
+                    }
+                },
+            });
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const pageWidth = 190;
             const maxSlice = Math.floor(canvas.width * 277 / pageWidth);
@@ -59,7 +71,7 @@ export default function PDFExport({ invoice, className }: PDFExportProps) {
 
     return (
         <>
-            <div ref={contentRef} aria-hidden="true" style={{ position: 'absolute', left: '-10000px', top: 0, width: 794, pointerEvents: 'none' }}>
+            <div id={exportId} ref={contentRef} aria-hidden="true" style={{ position: 'absolute', left: '-10000px', top: 0, width: 794, pointerEvents: 'none' }}>
                 <InvoiceDocument invoice={invoice} />
             </div>
             <button type="button" onClick={handleDownloadPDF} disabled={busy}
