@@ -9,9 +9,9 @@ interface InvoiceItem {
 }
 
 interface InvoicePreviewProps {
-    business: { name: string; email: string; phone: string; address?: string; gstin?: string };
-    invoice: { number: string; date: string; dueDate: string };
-    client: { name: string; email: string; address: string };
+    business: { name: string; email: string; phone: string; address?: string; gstin?: string; fssai?: string; placeOfSupply?: string };
+    invoice: { number: string; date: string; dueDate: string; orderReference?: string };
+    client: { name: string; email: string; address: string; gstin?: string };
     items: InvoiceItem[];
     totals: { subtotal: number; totalGST: number; totalAmount: number };
 }
@@ -26,12 +26,16 @@ export default function InvoicePreview({ business, invoice, client, items, total
                     businessPhone: business.phone,
                     businessAddress: business.address,
                     businessGstin: business.gstin,
+                    businessFssai: business.fssai,
+                    placeOfSupply: business.placeOfSupply,
                     invoiceNumber: invoice.number,
+                    orderReference: invoice.orderReference,
                     invoiceDate: invoice.date,
                     dueDate: invoice.dueDate,
                     clientName: client.name,
                     clientEmail: client.email,
                     clientAddress: client.address,
+                    clientGstin: client.gstin,
                     items,
                     ...totals,
                 }} />
