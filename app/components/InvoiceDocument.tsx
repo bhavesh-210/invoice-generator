@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 export interface InvoiceDocumentData {
@@ -27,10 +28,10 @@ export interface InvoiceDocumentData {
 const border = '1px solid #202020';
 const formatMoney = (amount: number) => formatCurrency(Number.isFinite(amount) ? amount : 0);
 const date = (value: string | Date) => value ? formatDate(value) : '—';
-const cell: React.CSSProperties = { padding: '7px 6px', borderRight: border, verticalAlign: 'top' };
-const heading: React.CSSProperties = { ...cell, borderBottom: border, fontSize: 11, fontWeight: 700 };
-const right: React.CSSProperties = { textAlign: 'right' };
-const label: React.CSSProperties = { fontWeight: 700, whiteSpace: 'nowrap', paddingRight: 8 };
+const cell: CSSProperties = { padding: '7px 6px', borderRight: border, verticalAlign: 'top' };
+const heading: CSSProperties = { ...cell, borderBottom: border, fontSize: 11, fontWeight: 700 };
+const right: CSSProperties = { textAlign: 'right' };
+const label: CSSProperties = { fontWeight: 700, whiteSpace: 'nowrap', paddingRight: 8 };
 
 function numberInWords(value: number) {
     if (!Number.isFinite(value) || value < 0) return '';
@@ -103,13 +104,13 @@ export default function InvoiceDocument({ invoice }: { invoice: InvoiceDocumentD
                 <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed', borderTop: border, borderBottom: border }}>
                     <thead>
                         <tr>
-                            <th style={{ ...heading, width: '7%', textAlign: 'center' }}>Sr No</th>
-                            <th style={{ ...heading, width: '34%', textAlign: 'center' }}>Description</th>
-                            <th style={{ ...heading, width: '9%', textAlign: 'center' }}>Qty</th>
+                            <th style={{ ...heading, width: '6%', textAlign: 'center' }}>Sr No</th>
+                            <th style={{ ...heading, width: '32%', textAlign: 'center' }}>Description</th>
+                            <th style={{ ...heading, width: '7%', textAlign: 'center' }}>Qty</th>
                             <th style={{ ...heading, width: '15%', ...right }}>Unit Price</th>
-                            <th style={{ ...heading, width: '15%', ...right }}>Taxable Value</th>
-                            <th style={{ ...heading, width: '10%', ...right }}>GST</th>
-                            <th style={{ ...heading, width: '10%', ...right, borderRight: 0 }}>Total</th>
+                            <th style={{ ...heading, width: '17%', ...right }}>Taxable Value</th>
+                            <th style={{ ...heading, width: '9%', ...right }}>GST</th>
+                            <th style={{ ...heading, width: '14%', ...right, borderRight: 0 }}>Total</th>
                         </tr>
                     </thead>
                     <tbody>
