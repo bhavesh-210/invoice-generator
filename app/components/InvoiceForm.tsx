@@ -21,6 +21,8 @@ export default function InvoiceForm() {
     const [businessName, setBusinessName] = useState('');
     const [businessEmail, setBusinessEmail] = useState('');
     const [businessPhone, setBusinessPhone] = useState('');
+    const [businessAddress, setBusinessAddress] = useState('');
+    const [businessGstin, setBusinessGstin] = useState('');
     const [invoiceNumber, setInvoiceNumber] = useState(generateInvoiceNumber());
     const [invoiceDate, setInvoiceDate] = useState(
         new Date().toISOString().split('T')[0],
@@ -50,6 +52,8 @@ export default function InvoiceForm() {
                         setBusinessName(data.businessName || '');
                         setBusinessEmail(data.businessEmail || '');
                         setBusinessPhone(data.businessPhone || '');
+                        setBusinessAddress(data.businessAddress || '');
+                        setBusinessGstin(data.businessGstin || '');
                         setInvoiceNumber(data.invoiceNumber || '');
                         if (data.invoiceDate) {
                             setInvoiceDate(
@@ -149,6 +153,8 @@ export default function InvoiceForm() {
                 businessName,
                 businessEmail,
                 businessPhone,
+                businessAddress,
+                businessGstin,
                 invoiceNumber,
                 invoiceDate: new Date(invoiceDate),
                 dueDate: new Date(dueDate),
@@ -229,7 +235,21 @@ export default function InvoiceForm() {
                         placeholder="Phone *"
                         value={businessPhone}
                         onChange={(e) => setBusinessPhone(e.target.value)}
-                        className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    />
+                    <textarea
+                        placeholder="Business address (optional)"
+                        value={businessAddress}
+                        onChange={(e) => setBusinessAddress(e.target.value)}
+                        rows={2}
+                        className="mb-3 w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Your business GSTIN (optional)"
+                        value={businessGstin}
+                        onChange={(e) => setBusinessGstin(e.target.value.toUpperCase())}
+                        className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-sm text-slate-900 shadow-sm"
                     />
                 </div>
 
@@ -376,6 +396,8 @@ export default function InvoiceForm() {
                             businessName,
                             businessEmail,
                             businessPhone,
+                            businessAddress,
+                            businessGstin,
                             invoiceNumber,
                             invoiceDate,
                             dueDate,
@@ -398,6 +420,8 @@ export default function InvoiceForm() {
                         name: businessName,
                         email: businessEmail,
                         phone: businessPhone,
+                        address: businessAddress,
+                        gstin: businessGstin,
                     }}
                     invoice={{
                         number: invoiceNumber,
