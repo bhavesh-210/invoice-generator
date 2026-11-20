@@ -7,6 +7,10 @@ export interface InvoiceDocumentData {
     businessPhone: string;
     businessAddress?: string;
     businessGstin?: string;
+    businessFssai?: string;
+    placeOfSupply?: string;
+    orderReference?: string;
+    clientGstin?: string;
     invoiceNumber: string;
     invoiceDate: string | Date;
     dueDate: string | Date;
@@ -74,6 +78,7 @@ export default function InvoiceDocument({ invoice }: { invoice: InvoiceDocumentD
                         <div style={{ fontWeight: 700, marginBottom: 12 }}>Invoice To:</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '102px 1fr', rowGap: 5 }}>
                             <span style={label}>Name:</span><span>{invoice.clientName || 'Client name'}</span>
+                            {invoice.clientGstin && <><span style={label}>GSTIN:</span><span>{invoice.clientGstin}</span></>}
                             <span style={label}>Customer Address:</span><span style={{ whiteSpace: 'pre-line' }}>{invoice.clientAddress || '—'}</span>
                             {invoice.clientEmail && <><span style={label}>Email:</span><span>{invoice.clientEmail}</span></>}
                         </div>
@@ -83,9 +88,11 @@ export default function InvoiceDocument({ invoice }: { invoice: InvoiceDocumentD
                         <div style={{ display: 'grid', gridTemplateColumns: '105px 1fr', rowGap: 5 }}>
                             <span style={label}>Business:</span><span>{invoice.businessName || 'Your business'}</span>
                             {invoice.businessGstin && <><span style={label}>GSTIN:</span><span>{invoice.businessGstin}</span></>}
+                            {invoice.businessFssai && <><span style={label}>FSSAI License:</span><span>{invoice.businessFssai}</span></>}
                             {invoice.businessAddress && <><span style={label}>Address:</span><span style={{ whiteSpace: 'pre-line' }}>{invoice.businessAddress}</span></>}
                             {invoice.businessPhone && <><span style={label}>Phone:</span><span>{invoice.businessPhone}</span></>}
                             {invoice.businessEmail && <><span style={label}>Email:</span><span>{invoice.businessEmail}</span></>}
+                            {invoice.placeOfSupply && <><span style={label}>Place of Supply:</span><span>{invoice.placeOfSupply}</span></>}
                         </div>
                     </div>
                 </section>
@@ -94,6 +101,7 @@ export default function InvoiceDocument({ invoice }: { invoice: InvoiceDocumentD
                     <div style={{ display: 'grid', gridTemplateColumns: '102px 1fr', rowGap: 5 }}>
                         <span style={label}>Document:</span><span>INV</span>
                         <span style={label}>Invoice No:</span><span>{invoice.invoiceNumber || '—'}</span>
+                        {invoice.orderReference && <><span style={label}>Order ID:</span><span>{invoice.orderReference}</span></>}
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '105px 1fr', rowGap: 5 }}>
                         <span style={label}>Invoice Date:</span><span>{date(invoice.invoiceDate)}</span>
