@@ -15,6 +15,10 @@ const invoiceSchema = new mongoose.Schema({
     },
     businessAddress: { type: String, default: '' },
     businessGstin: { type: String, default: '' },
+    businessFssai: { type: String, default: '' },
+    placeOfSupply: { type: String, default: '' },
+    orderReference: { type: String, default: '' },
+    clientGstin: { type: String, default: '' },
 
     invoiceNumber: {
         type: String,
